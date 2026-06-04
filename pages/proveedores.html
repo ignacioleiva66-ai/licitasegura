@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Busca información de proveedores registrados en Mercado Público ingresando su RUT chileno." />
+  <title>Buscar Proveedor – LicitaSeguro</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a2d5e'/><text x='50%25' y='55%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='%23c8922a' font-family='Arial' font-weight='900'>LS</text></svg>" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <div id="loaderOverlay" class="loader-overlay" role="status" aria-live="polite" aria-hidden="true">
+    <div class="loader-box">
+      <div class="loader-spinner" aria-hidden="true"></div>
+      <p class="loader-text" id="loaderText">Buscando proveedor...</p>
+    </div>
+  </div>
+
+  <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <div class="navbar-inner">
+      <a href="../index.html" class="navbar-brand" aria-label="LicitaSeguro – Ir al inicio">
+        <div class="navbar-logo" aria-hidden="true">LS</div>
+        <span class="navbar-name">Licita<span>Seguro</span></span>
+      </a>
+      <button id="navToggle" class="navbar-toggle" aria-controls="mainNav"
+        aria-expanded="false" aria-label="Abrir menú de navegación" tabindex="0">&#9776;</button>
+      <ul id="mainNav" class="navbar-nav" role="list">
+        <li role="listitem"><a href="../index.html">Inicio</a></li>
+        <li role="listitem"><a href="licitaciones.html">Licitaciones</a></li>
+        <li role="listitem"><a href="detalle.html">Detalle</a></li>
+        <li role="listitem"><a href="proveedores.html" aria-current="page">Proveedores</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-header" role="banner">
+    <div class="page-header-inner">
+      <h1>🏢 Buscar Proveedor</h1>
+      <p>Consulta información de proveedores registrados en Mercado Público por RUT</p>
+    </div>
+  </header>
+
+  <main id="main-content" class="main-container" tabindex="-1">
+
+    <nav aria-label="Ruta de navegación" class="breadcrumb">
+      <a href="../index.html">Inicio</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Proveedores</span>
+    </nav>
+
+    <!-- FORM -->
+    <section aria-labelledby="proveedor-form-title">
+      <div class="form-card">
+        <h2 id="proveedor-form-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--color-primary);margin-bottom:1rem;">
+          🔍 Buscar Proveedor por RUT
+        </h2>
+
+        <!-- INFO SOBRE FORMATO RUT -->
+        <div class="alert alert-info" style="margin-bottom:1rem;" role="note">
+          <span class="alert-icon" aria-hidden="true">ℹ️</span>
+          <div>
+            <strong>Formato RUT:</strong> Ingresa el RUT con o sin formato (ej: <code>77.653.382-3</code> o <code>776533823</code>).
+            El sistema validará el dígito verificador automáticamente.
+          </div>
+        </div>
+
+        <form id="proveedorForm" novalidate aria-label="Formulario de búsqueda de proveedor por RUT">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputRut">
+                RUT del Proveedor <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="inputRut"
+                name="rut"
+                placeholder="Ej: 77.653.382-3"
+                required
+                aria-required="true"
+                aria-describedby="errorRut helpRut"
+                autocomplete="off"
+                spellcheck="false"
+                inputmode="text"
+                tabindex="0"
+                maxlength="12"
+              />
+              <span id="helpRut" class="help-text">
+                Ingresa el RUT de la empresa proveedora (con o sin puntos y guión).
+                El dígito verificador puede ser un número o la letra K.
+              </span>
+              <span id="errorRut" class="error-msg" role="alert" aria-live="polite">
+                <span aria-hidden="true">⚠️</span>
+                <span id="errorRutText"></span>
+              </span>
+            </div>
+
+            <div class="form-group" style="justify-content:flex-end;">
+              <button type="submit" class="btn btn-primary" tabindex="0"
+                aria-label="Buscar proveedor por RUT ingresado">
+                🔎 Buscar
+              </button>
+            </div>
+
+            <div class="form-group" style="justify-content:flex-end;">
+              <button type="button" id="btnLimpiar" class="btn btn-secondary" tabindex="0"
+                aria-label="Limpiar búsqueda de proveedor">
+                ✕ Limpiar
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- RUT Preview -->
+        <div id="rutPreview" style="display:none;margin-top:0.75rem;">
+          <span style="font-size:0.82rem;color:var(--color-text-secondary);">RUT formateado: </span>
+          <code id="rutFormatted" style="font-size:0.9rem;font-weight:600;color:var(--color-primary);"></code>
+        </div>
+      </div>
+    </section>
+
+    <div id="alertArea" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- RESULTADO -->
+    <section id="resultSection" style="display:none;" aria-labelledby="proveedor-result-title" aria-live="polite">
+
+      <div class="proveedor-card">
+        <div class="proveedor-header">
+          <div class="proveedor-avatar" id="proveedorAvatar" aria-hidden="true">?</div>
+          <div>
+            <h2 id="proveedor-result-title" class="proveedor-name" tabindex="-1"></h2>
+            <p class="proveedor-rut" id="proveedorRutDisplay"></p>
+          </div>
+        </div>
+
+        <div class="detail-grid" id="proveedorDetail"></div>
+      </div>
+
+    </section>
+
+    <!-- INITIAL STATE -->
+    <div id="initialState" class="empty-state">
+      <div class="empty-icon" aria-hidden="true">🏢</div>
+      <p class="empty-title">Ingresa un RUT para buscar un proveedor</p>
+      <p style="font-size:0.9rem;color:var(--color-text-secondary);">
+        Ingresa el RUT de la empresa proveedora con formato chileno (ej: 77.653.382-3)
+      </p>
+    </div>
+
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">Licita<span>Seguro</span></div>
+        <p class="footer-desc">Portal público de acceso a licitaciones del Estado de Chile.</p>
+      </div>
+      <div>
+        <p class="footer-section-title">Módulos</p>
+        <ul class="footer-links" role="list">
+          <li><a href="licitaciones.html">Listado de Licitaciones</a></li>
+          <li><a href="detalle.html">Detalle de Licitación</a></li>
+          <li><a href="proveedores.html">Buscar Proveedor</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-section-title">Fuentes</p>
+        <ul class="footer-links" role="list">
+          <li><a href="https://www.mercadopublico.cl" target="_blank" rel="noopener noreferrer">Mercado Público</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 LicitaSeguro. Datos provistos por Mercado Público – Chile.</p>
+    </div>
+  </footer>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/rut.js"></script>
+  <script>
+  'use strict';
+  const { LS } = window;
+  const Rut = window.RutValidator;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    LS.setActiveNav();
+    LS.initNavToggle();
+    initForm();
+  });
+
+  function initForm() {
+    const form = document.getElementById('proveedorForm');
+    const inputRut = document.getElementById('inputRut');
+    const errorEl = document.getElementById('errorRut');
+    const errorText = document.getElementById('errorRutText');
+    const rutPreview = document.getElementById('rutPreview');
+    const rutFormatted = document.getElementById('rutFormatted');
+
+    // Formatear en tiempo real
+    inputRut.addEventListener('input', () => {
+      Rut.formatOnInput(inputRut);
+      clearError();
+      rutPreview.style.display = 'none';
+    });
+
+    // Validar al salir
+    inputRut.addEventListener('blur', () => {
+      if (!inputRut.value.trim()) return;
+      const result = Rut.validate(inputRut.value);
+      if (!result.valid) {
+        showError(result.error);
+      } else {
+        clearError();
+        inputRut.classList.add('is-valid');
+        inputRut.value = Rut.format(inputRut.value);
+        rutFormatted.textContent = inputRut.value;
+        rutPreview.style.display = '';
+      }
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const result = Rut.validate(inputRut.value);
+
+      if (!inputRut.value.trim()) {
+        showError('El RUT del proveedor es obligatorio.');
+        inputRut.focus();
+        return;
+      }
+
+      if (!result.valid) {
+        showError(result.error);
+        inputRut.focus();
+        return;
+      }
+
+      clearError();
+      inputRut.value = Rut.format(inputRut.value);
+      buscarProveedor(Rut.clean(inputRut.value));
+    });
+
+    document.getElementById('btnLimpiar').addEventListener('click', () => {
+      form.reset();
+      clearError();
+      rutPreview.style.display = 'none';
+      document.getElementById('resultSection').style.display = 'none';
+      document.getElementById('initialState').style.display = '';
+      LS.clearAlert(document.getElementById('alertArea'));
+    });
+  }
+
+  function showError(msg) {
+    const input = document.getElementById('inputRut');
+    const errorEl = document.getElementById('errorRut');
+    const errorText = document.getElementById('errorRutText');
+    input.classList.add('is-invalid');
+    input.classList.remove('is-valid');
+    input.setAttribute('aria-invalid', 'true');
+    errorText.textContent = msg;
+    errorEl.classList.add('show');
+    document.getElementById('rutPreview').style.display = 'none';
+  }
+
+  function clearError() {
+    const input = document.getElementById('inputRut');
+    const errorEl = document.getElementById('errorRut');
+    input.classList.remove('is-invalid');
+    input.removeAttribute('aria-invalid');
+    errorEl.classList.remove('show');
+  }
+
+  // ── API ─────────────────────────────────────────────
+  async function buscarProveedor(rutLimpio) {
+    const alertArea = document.getElementById('alertArea');
+    LS.clearAlert(alertArea);
+    document.getElementById('resultSection').style.display = 'none';
+    document.getElementById('initialState').style.display = 'none';
+
+    try {
+      const url = LS.buildProveedorUrl(Rut.format(rutLimpio));
+      const data = await LS.apiFetch(url, 'Buscando información del proveedor...');
+
+      if (!data) {
+        LS.showAlert(alertArea, 'warning', `🔍 No se encontró información para el RUT <strong>${escHtml(Rut.format(rutLimpio))}</strong>.`);
+        document.getElementById('initialState').style.display = '';
+        return;
+      }
+
+      // API puede retornar estructura directa o en listaEmpresas
+      const empresa = extractEmpresa(data);
+
+      if (!empresa) {
+        LS.showAlert(alertArea, 'info', `🔍 El RUT <strong>${escHtml(Rut.format(rutLimpio))}</strong> no está registrado como proveedor en Mercado Público.`);
+        document.getElementById('initialState').style.display = '';
+        return;
+      }
+
+      renderProveedor(empresa, Rut.format(rutLimpio));
+
+    } catch (err) {
+      LS.showAlert(alertArea, 'danger', LS.buildErrorMsg(err));
+      document.getElementById('initialState').style.display = '';
+    }
+  }
+
+  function extractEmpresa(data) {
+    // Possible structures from Mercado Público API
+    if (data.listaEmpresas && data.listaEmpresas.length > 0) return data.listaEmpresas[0];
+    if (data.Cantidad && data.listaEmpresas) return data.listaEmpresas[0] || null;
+    if (Array.isArray(data) && data.length > 0) return data[0];
+    if (data.NombreEmpresa || data.CodigoEmpresa) return data;
+    // Try direct response
+    if (data.Cantidad === 1 && data.listaEmpresas) return data.listaEmpresas[0];
+    if (data.Cantidad === 0) return null;
+    return data;
+  }
+
+  function renderProveedor(empresa, rutFormateado) {
+    const section = document.getElementById('resultSection');
+    const avatar = document.getElementById('proveedorAvatar');
+    const name = document.getElementById('proveedor-result-title');
+    const rutDisplay = document.getElementById('proveedorRutDisplay');
+    const detail = document.getElementById('proveedorDetail');
+
+    const nombreEmpresa = empresa.NombreEmpresa || empresa.nombre || empresa.Nombre || 'Proveedor';
+    const codigoEmpresa = empresa.CodigoEmpresa || empresa.codigo || empresa.Codigo || '—';
+    const rutEmpresa = empresa.RutEmpresa || empresa.rut || empresa.Rut || rutFormateado;
+    const region = empresa.Region || empresa.region || '—';
+    const ciudad = empresa.Ciudad || empresa.ciudad || '—';
+    const giro = empresa.GiroEmpresa || empresa.giro || '—';
+    const telefono = empresa.Telefono || empresa.telefono || '—';
+    const email = empresa.Email || empresa.email || '—';
+    const web = empresa.PaginaWeb || empresa.web || '—';
+
+    // Avatar: initials
+    const initials = nombreEmpresa.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    avatar.textContent = initials || '?';
+
+    name.textContent = nombreEmpresa;
+    rutDisplay.textContent = `RUT: ${rutEmpresa}`;
+
+    detail.innerHTML = `
+      <div class="detail-card">
+        <h3 class="detail-card-title">🏢 Datos de la Empresa</h3>
+        <div class="detail-field">
+          <div class="detail-label">Nombre</div>
+          <div class="detail-value large">${escHtml(nombreEmpresa)}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">RUT</div>
+          <div class="detail-value"><span class="table-code">${escHtml(rutEmpresa)}</span></div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Código Empresa</div>
+          <div class="detail-value">${escHtml(String(codigoEmpresa))}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Giro</div>
+          <div class="detail-value">${escHtml(giro)}</div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <h3 class="detail-card-title">📍 Contacto y Ubicación</h3>
+        <div class="detail-field">
+          <div class="detail-label">Región</div>
+          <div class="detail-value">${escHtml(region)}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Ciudad</div>
+          <div class="detail-value">${escHtml(ciudad)}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Teléfono</div>
+          <div class="detail-value">${telefono !== '—' ? `<a href="tel:${escHtml(telefono)}" style="color:var(--color-primary);">${escHtml(telefono)}</a>` : '—'}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Email</div>
+          <div class="detail-value">${email !== '—' ? `<a href="mailto:${escHtml(email)}" style="color:var(--color-primary);">${escHtml(email)}</a>` : '—'}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Sitio Web</div>
+          <div class="detail-value">${web !== '—' ? `<a href="${escHtml(web)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary);">${escHtml(web)}</a>` : '—'}</div>
+        </div>
+      </div>
+    `;
+
+    section.style.display = '';
+    name.focus();
+  }
+
+  function escHtml(str) {
+    if (str === null || str === undefined) return '—';
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Consulta el listado de licitaciones públicas disponibles en Mercado Público. Filtra por fecha y estado." />
+  <title>Licitaciones – LicitaSeguro</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a2d5e'/><text x='50%25' y='55%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='%23c8922a' font-family='Arial' font-weight='900'>LS</text></svg>" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- Loader -->
+  <div id="loaderOverlay" class="loader-overlay" role="status" aria-live="polite" aria-hidden="true">
+    <div class="loader-box">
+      <div class="loader-spinner" aria-hidden="true"></div>
+      <p class="loader-text" id="loaderText">Consultando licitaciones...</p>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <div class="navbar-inner">
+      <a href="../index.html" class="navbar-brand" aria-label="LicitaSeguro – Ir al inicio">
+        <div class="navbar-logo" aria-hidden="true">LS</div>
+        <span class="navbar-name">Licita<span>Seguro</span></span>
+      </a>
+      <button id="navToggle" class="navbar-toggle" aria-controls="mainNav"
+        aria-expanded="false" aria-label="Abrir menú de navegación" tabindex="0">&#9776;</button>
+      <ul id="mainNav" class="navbar-nav" role="list">
+        <li role="listitem"><a href="../index.html">Inicio</a></li>
+        <li role="listitem"><a href="licitaciones.html" aria-current="page">Licitaciones</a></li>
+        <li role="listitem"><a href="detalle.html">Detalle</a></li>
+        <li role="listitem"><a href="proveedores.html">Proveedores</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header" role="banner">
+    <div class="page-header-inner">
+      <h1>📋 Listado de Licitaciones</h1>
+      <p>Consulta y filtra las licitaciones disponibles en Mercado Público</p>
+    </div>
+  </header>
+
+  <main id="main-content" class="main-container" tabindex="-1">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="Ruta de navegación" class="breadcrumb">
+      <a href="../index.html">Inicio</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Licitaciones</span>
+    </nav>
+
+    <!-- FILTROS -->
+    <section aria-labelledby="filtros-title" id="filtros">
+      <div class="form-card">
+        <h2 id="filtros-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--color-primary);margin-bottom:1rem;">
+          🔍 Filtrar Licitaciones
+        </h2>
+        <form id="filtrosForm" novalidate aria-label="Formulario de filtros de licitaciones">
+          <div class="form-row">
+
+            <div class="form-group">
+              <label for="inputFecha">
+                Fecha <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="date"
+                id="inputFecha"
+                name="fecha"
+                required
+                aria-required="true"
+                aria-describedby="errorFecha helpFecha"
+                tabindex="0"
+              />
+              <span id="helpFecha" class="help-text">Selecciona la fecha de publicación a consultar.</span>
+              <span id="errorFecha" class="error-msg" role="alert" aria-live="polite">
+                <span aria-hidden="true">⚠️</span> <span id="errorFechaText"></span>
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="selectEstado">Estado</label>
+              <select
+                id="selectEstado"
+                name="estado"
+                aria-describedby="helpEstado"
+                tabindex="0"
+              >
+                <!-- Opciones pobladas por JS -->
+              </select>
+              <span id="helpEstado" class="help-text">Filtra por estado de la licitación (opcional).</span>
+            </div>
+
+            <div class="form-group" style="justify-content:flex-end;">
+              <button type="submit" class="btn btn-primary" id="btnBuscar" tabindex="0"
+                aria-label="Buscar licitaciones con los filtros seleccionados">
+                🔎 Buscar
+              </button>
+            </div>
+
+            <div class="form-group" style="justify-content:flex-end;">
+              <button type="button" class="btn btn-secondary" id="btnLimpiar" tabindex="0"
+                aria-label="Limpiar filtros de búsqueda">
+                ✕ Limpiar
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ALERT AREA -->
+    <div id="alertArea" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- RESULTS -->
+    <section id="resultsSection" aria-labelledby="results-title" aria-live="polite">
+      <div class="results-header" id="resultsHeader" style="display:none;">
+        <h2 id="results-title" class="results-count" tabindex="-1"></h2>
+        <div id="paginationTop" class="pagination" aria-label="Paginación superior"></div>
+      </div>
+
+      <div id="tableWrapper" style="overflow-x:auto;" aria-label="Tabla de licitaciones"></div>
+
+      <div id="paginationBottom" class="pagination" aria-label="Paginación inferior" style="margin-top:1rem;"></div>
+    </section>
+
+    <!-- INITIAL STATE -->
+    <div id="initialState" class="empty-state" aria-live="polite">
+      <div class="empty-icon" aria-hidden="true">📋</div>
+      <p class="empty-title">Selecciona una fecha y haz clic en "Buscar"</p>
+      <p style="font-size:0.9rem;color:var(--color-text-secondary);">
+        Puedes filtrar por fecha y estado de licitación.
+      </p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">Licita<span>Seguro</span></div>
+        <p class="footer-desc">Portal público de acceso a licitaciones del Estado de Chile.</p>
+      </div>
+      <div>
+        <p class="footer-section-title">Módulos</p>
+        <ul class="footer-links" role="list">
+          <li><a href="licitaciones.html">Listado de Licitaciones</a></li>
+          <li><a href="detalle.html">Detalle de Licitación</a></li>
+          <li><a href="proveedores.html">Buscar Proveedor</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-section-title">Fuentes</p>
+        <ul class="footer-links" role="list">
+          <li><a href="https://www.mercadopublico.cl" target="_blank" rel="noopener noreferrer">Mercado Público</a></li>
+          <li><a href="https://api.mercadopublico.cl" target="_blank" rel="noopener noreferrer">API Mercado Público</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 LicitaSeguro. Datos provistos por Mercado Público – Chile.</p>
+    </div>
+  </footer>
+
+  <script src="../js/utils.js"></script>
+  <script>
+  'use strict';
+  const { LS } = window;
+
+  // ── State ──────────────────────────────────────────
+  let allData = [];
+  let currentPage = 1;
+  const PAGE_SIZE = LS.CONFIG.PAGE_SIZE;
+
+  // ── Init ───────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    LS.setActiveNav();
+    LS.initNavToggle();
+    populateEstados();
+    setDefaultFecha();
+    initForm();
+  });
+
+  function setDefaultFecha() {
+    const hoy = new Date();
+    const yyyy = hoy.getFullYear();
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    document.getElementById('inputFecha').value = `${yyyy}-${mm}-${dd}`;
+  }
+
+  function populateEstados() {
+    const sel = document.getElementById('selectEstado');
+    LS.CONFIG.ESTADOS.forEach(e => {
+      const opt = document.createElement('option');
+      opt.value = e.value;
+      opt.textContent = e.label;
+      sel.appendChild(opt);
+    });
+  }
+
+  // ── Form ───────────────────────────────────────────
+  function initForm() {
+    const form = document.getElementById('filtrosForm');
+    const inputFecha = document.getElementById('inputFecha');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!validateForm()) return;
+      buscarLicitaciones();
+    });
+
+    document.getElementById('btnLimpiar').addEventListener('click', () => {
+      form.reset();
+      setDefaultFecha();
+      clearErrors();
+      allData = [];
+      renderTable([]);
+      document.getElementById('initialState').style.display = '';
+      document.getElementById('resultsHeader').style.display = 'none';
+      LS.clearAlert(document.getElementById('alertArea'));
+    });
+
+    // Real-time validation on blur
+    inputFecha.addEventListener('blur', () => {
+      validateFecha();
+    });
+
+    inputFecha.addEventListener('input', () => {
+      clearFieldError('inputFecha', 'errorFecha');
+    });
+  }
+
+  function validateFecha() {
+    const input = document.getElementById('inputFecha');
+    const errorSpan = document.getElementById('errorFechaText');
+    const errorEl = document.getElementById('errorFecha');
+    const val = input.value.trim();
+
+    if (!val) {
+      setError(input, errorSpan, errorEl, 'La fecha es obligatoria para realizar la búsqueda.');
+      return false;
+    }
+
+    const selected = new Date(val + 'T00:00:00');
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    if (isNaN(selected)) {
+      setError(input, errorSpan, errorEl, 'La fecha ingresada no es válida.');
+      return false;
+    }
+
+    if (selected > today) {
+      setError(input, errorSpan, errorEl, 'No puedes consultar una fecha futura.');
+      return false;
+    }
+
+    // Max 2 years back
+    const twoYearsAgo = new Date();
+    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+    if (selected < twoYearsAgo) {
+      setError(input, errorSpan, errorEl, 'La fecha no puede ser anterior a 2 años atrás.');
+      return false;
+    }
+
+    clearFieldError('inputFecha', 'errorFecha');
+    input.classList.add('is-valid');
+    return true;
+  }
+
+  function validateForm() {
+    return validateFecha();
+  }
+
+  function setError(input, textEl, errorEl, msg) {
+    input.classList.add('is-invalid');
+    input.classList.remove('is-valid');
+    textEl.textContent = msg;
+    errorEl.classList.add('show');
+    input.setAttribute('aria-invalid', 'true');
+  }
+
+  function clearFieldError(inputId, errorId) {
+    const input = document.getElementById(inputId);
+    const errorEl = document.getElementById(errorId);
+    if (input) { input.classList.remove('is-invalid'); input.removeAttribute('aria-invalid'); }
+    if (errorEl) { errorEl.classList.remove('show'); }
+  }
+
+  function clearErrors() {
+    clearFieldError('inputFecha', 'errorFecha');
+    document.getElementById('errorFechaText').textContent = '';
+  }
+
+  // ── API ────────────────────────────────────────────
+  async function buscarLicitaciones() {
+    const fecha = LS.fechaInputToParam(document.getElementById('inputFecha').value);
+    const estado = document.getElementById('selectEstado').value;
+
+    const url = LS.buildLicitacionesUrl({ fecha, estado });
+    const alertArea = document.getElementById('alertArea');
+    const initialState = document.getElementById('initialState');
+
+    LS.clearAlert(alertArea);
+    initialState.style.display = 'none';
+
+    try {
+      const data = await LS.apiFetch(url, 'Consultando licitaciones en Mercado Público...');
+
+      if (!data || !data.Listado || !Array.isArray(data.Listado)) {
+        allData = [];
+        renderTable([]);
+        document.getElementById('resultsHeader').style.display = 'flex';
+        LS.showAlert(alertArea, 'warning', '⚠️ La respuesta de la API no contiene datos de licitaciones para los filtros seleccionados.');
+        return;
+      }
+
+      allData = data.Listado;
+
+      if (allData.length === 0) {
+        renderTable([]);
+        document.getElementById('resultsHeader').style.display = 'flex';
+        updateResultsCount(0, fecha, estado);
+        LS.showAlert(alertArea, 'info', '🔍 No se encontraron licitaciones para los criterios seleccionados. Prueba con otra fecha o estado.');
+        return;
+      }
+
+      currentPage = 1;
+      renderPage();
+
+    } catch (err) {
+      document.getElementById('resultsHeader').style.display = 'none';
+      document.getElementById('tableWrapper').innerHTML = '';
+      LS.showAlert(alertArea, 'danger', LS.buildErrorMsg(err));
+      initialState.style.display = '';
+    }
+  }
+
+  // ── Render ─────────────────────────────────────────
+  function renderPage() {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const slice = allData.slice(start, start + PAGE_SIZE);
+    renderTable(slice);
+    updateResultsCount(allData.length);
+    renderPaginations();
+
+    // Scroll to results
+    document.getElementById('results-title').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('results-title').focus();
+  }
+
+  function updateResultsCount(total) {
+    const el = document.getElementById('results-title');
+    const header = document.getElementById('resultsHeader');
+    header.style.display = 'flex';
+    if (total === 0) {
+      el.textContent = 'Sin resultados';
+    } else {
+      const start = (currentPage - 1) * PAGE_SIZE + 1;
+      const end = Math.min(currentPage * PAGE_SIZE, total);
+      el.textContent = `Mostrando ${start}–${end} de ${total} licitaciones`;
+    }
+  }
+
+  function renderPaginations() {
+    const onPage = p => { currentPage = p; renderPage(); };
+    LS.buildPagination(document.getElementById('paginationTop'), allData.length, currentPage, PAGE_SIZE, onPage);
+    LS.buildPagination(document.getElementById('paginationBottom'), allData.length, currentPage, PAGE_SIZE, onPage);
+  }
+
+  function renderTable(licitaciones) {
+    const wrapper = document.getElementById('tableWrapper');
+
+    if (!licitaciones || licitaciones.length === 0) {
+      wrapper.innerHTML = '';
+      return;
+    }
+
+    const rows = licitaciones.map(l => {
+      const codigo = l.CodigoExterno || '—';
+      const nombre = l.Nombre || 'Sin nombre';
+      const estado = l.CodigoEstado !== undefined ? mapEstadoCodigo(l.CodigoEstado, l.Estado) : (l.Estado || 'Desconocido');
+      const cierre = LS.formatFechaDisplay(l.FechaCierre);
+
+      return `
+        <tr>
+          <td data-label="Código">
+            <span class="table-code">${escHtml(codigo)}</span>
+          </td>
+          <td class="table-name" data-label="Nombre">
+            <span class="table-name-text" title="${escHtml(nombre)}">${escHtml(nombre)}</span>
+          </td>
+          <td data-label="Estado">${LS.buildBadge(estado)}</td>
+          <td data-label="Cierre">${escHtml(cierre)}</td>
+          <td data-label="Acciones">
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <a href="detalle.html?codigo=${encodeURIComponent(codigo)}"
+                class="btn btn-primary btn-sm"
+                aria-label="Ver detalle de licitación ${escHtml(codigo)}"
+                tabindex="0">
+                📄 Detalle
+              </a>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+
+    wrapper.innerHTML = `
+      <table class="licitacion-table" role="table" aria-label="Listado de licitaciones">
+        <thead>
+          <tr role="row">
+            <th scope="col" tabindex="0">Código</th>
+            <th scope="col" tabindex="0">Nombre</th>
+            <th scope="col" tabindex="0">Estado</th>
+            <th scope="col" tabindex="0">Fecha Cierre</th>
+            <th scope="col" tabindex="0">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function mapEstadoCodigo(codigo, estadoTexto) {
+    if (estadoTexto) return estadoTexto;
+    const map = { 5: 'Publicada', 6: 'Cerrada', 7: 'Desierta', 8: 'Adjudicada', 9: 'Revocada', 10: 'Suspendida', 15: 'Activa' };
+    return map[parseInt(codigo)] || `Estado ${codigo}`;
+  }
+
+  function escHtml(str) {
+    if (str === null || str === undefined) return '—';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  </script>
+</body>
+</html>

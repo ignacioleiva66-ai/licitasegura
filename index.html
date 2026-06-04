@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LicitaSeguro – Accede a licitaciones públicas de Mercado Público de forma sencilla, transparente y accesible." />
+  <title>LicitaSeguro – Inicio</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Favicon SVG inline -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a2d5e'/><text x='50%25' y='55%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='%23c8922a' font-family='Arial' font-weight='900'>LS</text></svg>" />
+</head>
+<body>
+  <!-- Skip to content -->
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- Loader -->
+  <div id="loaderOverlay" class="loader-overlay" role="status" aria-live="polite" aria-hidden="true">
+    <div class="loader-box">
+      <div class="loader-spinner" aria-hidden="true"></div>
+      <p class="loader-text" id="loaderText">Cargando datos...</p>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand" aria-label="LicitaSeguro – Ir al inicio">
+        <div class="navbar-logo" aria-hidden="true">LS</div>
+        <span class="navbar-name">Licita<span>Seguro</span></span>
+      </a>
+      <button id="navToggle" class="navbar-toggle" aria-controls="mainNav"
+        aria-expanded="false" aria-label="Abrir menú de navegación" tabindex="0">
+        &#9776;
+      </button>
+      <ul id="mainNav" class="navbar-nav" role="list" aria-label="Menú principal">
+        <li role="listitem"><a href="index.html" aria-current="page">Inicio</a></li>
+        <li role="listitem"><a href="pages/licitaciones.html">Licitaciones</a></li>
+        <li role="listitem"><a href="pages/detalle.html">Detalle</a></li>
+        <li role="listitem"><a href="pages/proveedores.html">Proveedores</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar" aria-label="Información general de la plataforma">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <span aria-hidden="true">🏛️</span>
+        <span>Fuente oficial: <strong>Mercado Público Chile</strong></span>
+      </div>
+      <div class="stat-item">
+        <span aria-hidden="true">🔒</span>
+        <span>Datos <strong>100% oficiales</strong></span>
+      </div>
+      <div class="stat-item">
+        <span aria-hidden="true">♿</span>
+        <span>Diseño <strong>accesible WCAG AA</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-content">
+      <div class="hero-badge" aria-label="Información transparente sobre licitaciones públicas">
+        🔎 Portal de Licitaciones Públicas
+      </div>
+      <h1 class="hero-title" id="hero-title">
+        Información <span class="accent">transparente</span><br>sobre licitaciones en Chile
+      </h1>
+      <p class="hero-subtitle">
+        Consulta, filtra y analiza las licitaciones de Mercado Público en un portal
+        moderno, accesible y fácil de usar. Sin complicaciones.
+      </p>
+      <div class="hero-actions">
+        <a href="pages/licitaciones.html" class="btn btn-primary btn-lg"
+          aria-label="Ir al módulo de búsqueda de licitaciones">
+          📋 Ver Licitaciones
+        </a>
+        <a href="pages/proveedores.html" class="btn btn-outline btn-lg"
+          aria-label="Ir al módulo de búsqueda de proveedores">
+          🏢 Buscar Proveedor
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <main id="main-content" tabindex="-1">
+
+    <!-- MÓDULOS -->
+    <section class="modules-section" aria-labelledby="modulos-title">
+      <div class="section-header">
+        <h2 class="section-title" id="modulos-title">¿Qué puedes hacer en LicitaSeguro?</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+      </div>
+
+      <div class="modules-grid" role="list">
+
+        <a href="pages/licitaciones.html" class="module-card" role="listitem"
+          aria-label="Módulo: Consultar y navegar el listado de licitaciones disponibles">
+          <div class="module-icon" aria-hidden="true">📋</div>
+          <h3 class="module-card-title">Listado de Licitaciones</h3>
+          <p class="module-card-desc">
+            Consulta y navega el catálogo completo de licitaciones disponibles en
+            Mercado Público, actualizado en tiempo real.
+          </p>
+          <span class="module-card-link" aria-hidden="true">Ir al módulo →</span>
+        </a>
+
+        <a href="pages/licitaciones.html#filtros" class="module-card" role="listitem"
+          aria-label="Módulo: Filtrar licitaciones por fecha y estado">
+          <div class="module-icon" aria-hidden="true">🔍</div>
+          <h3 class="module-card-title">Filtrar Licitaciones</h3>
+          <p class="module-card-desc">
+            Filtra licitaciones por fecha y estado (activa, adjudicada, revocada, etc.)
+            para encontrar exactamente lo que necesitas.
+          </p>
+          <span class="module-card-link" aria-hidden="true">Ir al módulo →</span>
+        </a>
+
+        <a href="pages/detalle.html" class="module-card" role="listitem"
+          aria-label="Módulo: Ver detalles completos de cada licitación">
+          <div class="module-icon" aria-hidden="true">📄</div>
+          <h3 class="module-card-title">Detalle de Licitación</h3>
+          <p class="module-card-desc">
+            Accede a la información completa de cada licitación: descripción, comprador,
+            estado, fecha de cierre, ítems y más.
+          </p>
+          <span class="module-card-link" aria-hidden="true">Ir al módulo →</span>
+        </a>
+
+        <a href="pages/proveedores.html" class="module-card" role="listitem"
+          aria-label="Módulo: Buscar proveedores por RUT">
+          <div class="module-icon" aria-hidden="true">🏢</div>
+          <h3 class="module-card-title">Buscar Proveedor</h3>
+          <p class="module-card-desc">
+            Busca información de proveedores registrados en Mercado Público
+            ingresando su RUT chileno.
+          </p>
+          <span class="module-card-link" aria-hidden="true">Ir al módulo →</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section aria-labelledby="about-title" style="background:var(--color-surface); padding: 3rem 0; margin-top: 1rem;">
+      <div class="modules-section" style="padding-top:0; padding-bottom:0;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:center;">
+          <div>
+            <h2 id="about-title" style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--color-primary);margin-bottom:1rem;">
+              ¿Qué es LicitaSeguro?
+            </h2>
+            <p style="color:var(--color-text-secondary);line-height:1.8;margin-bottom:1rem;">
+              LicitaSeguro es un portal público dedicado a facilitar el acceso a
+              información transparente sobre las licitaciones públicas en Chile,
+              mediante la integración con la API oficial de Mercado Público de
+              ChileCompra.
+            </p>
+            <p style="color:var(--color-text-secondary);line-height:1.8;">
+              Diseñado con los principios de accesibilidad WCAG 2.1 nivel AA, permite
+              a proveedores, ciudadanos y funcionarios navegar el ecosistema de compras
+              públicas de forma eficiente y sin barreras.
+            </p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div style="background:var(--color-surface-2);border-radius:var(--radius-md);padding:1.5rem;text-align:center;">
+              <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--color-primary);">API</div>
+              <div style="font-size:0.85rem;color:var(--color-text-secondary);">Mercado Público Oficial</div>
+            </div>
+            <div style="background:var(--color-surface-2);border-radius:var(--radius-md);padding:1.5rem;text-align:center;">
+              <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--color-accent);">AA</div>
+              <div style="font-size:0.85rem;color:var(--color-text-secondary);">WCAG 2.1 Accesible</div>
+            </div>
+            <div style="background:var(--color-surface-2);border-radius:var(--radius-md);padding:1.5rem;text-align:center;">
+              <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--color-success);">📱</div>
+              <div style="font-size:0.85rem;color:var(--color-text-secondary);">100% Responsivo</div>
+            </div>
+            <div style="background:var(--color-surface-2);border-radius:var(--radius-md);padding:1.5rem;text-align:center;">
+              <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--color-primary);">🔒</div>
+              <div style="font-size:0.85rem;color:var(--color-text-secondary);">Datos Oficiales</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">Licita<span>Seguro</span></div>
+        <p class="footer-desc">
+          Portal público de acceso a licitaciones del Estado de Chile.<br>
+          Datos provistos por la API de Mercado Público – ChileCompra.
+        </p>
+      </div>
+      <div>
+        <p class="footer-section-title">Módulos</p>
+        <ul class="footer-links" role="list">
+          <li role="listitem"><a href="pages/licitaciones.html">Listado de Licitaciones</a></li>
+          <li role="listitem"><a href="pages/detalle.html">Detalle de Licitación</a></li>
+          <li role="listitem"><a href="pages/proveedores.html">Buscar Proveedor</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-section-title">Fuentes</p>
+        <ul class="footer-links" role="list">
+          <li role="listitem"><a href="https://www.mercadopublico.cl" target="_blank" rel="noopener noreferrer">Mercado Público</a></li>
+          <li role="listitem"><a href="https://api.mercadopublico.cl" target="_blank" rel="noopener noreferrer">API Mercado Público</a></li>
+          <li role="listitem"><a href="https://www.chilecompra.cl" target="_blank" rel="noopener noreferrer">ChileCompra</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 LicitaSeguro. Datos provistos por Mercado Público – Chile. Este sitio no es oficial del Estado.</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      LS.setActiveNav();
+      LS.initNavToggle();
+    });
+  </script>
+</body>
+</html>

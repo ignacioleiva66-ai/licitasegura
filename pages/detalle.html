@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Consulta el detalle completo de una licitación de Mercado Público por código." />
+  <title>Detalle de Licitación – LicitaSeguro</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a2d5e'/><text x='50%25' y='55%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='%23c8922a' font-family='Arial' font-weight='900'>LS</text></svg>" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <div id="loaderOverlay" class="loader-overlay" role="status" aria-live="polite" aria-hidden="true">
+    <div class="loader-box">
+      <div class="loader-spinner" aria-hidden="true"></div>
+      <p class="loader-text" id="loaderText">Cargando detalle...</p>
+    </div>
+  </div>
+
+  <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <div class="navbar-inner">
+      <a href="../index.html" class="navbar-brand" aria-label="LicitaSeguro – Ir al inicio">
+        <div class="navbar-logo" aria-hidden="true">LS</div>
+        <span class="navbar-name">Licita<span>Seguro</span></span>
+      </a>
+      <button id="navToggle" class="navbar-toggle" aria-controls="mainNav"
+        aria-expanded="false" aria-label="Abrir menú de navegación" tabindex="0">&#9776;</button>
+      <ul id="mainNav" class="navbar-nav" role="list">
+        <li role="listitem"><a href="../index.html">Inicio</a></li>
+        <li role="listitem"><a href="licitaciones.html">Licitaciones</a></li>
+        <li role="listitem"><a href="detalle.html" aria-current="page">Detalle</a></li>
+        <li role="listitem"><a href="proveedores.html">Proveedores</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-header" role="banner">
+    <div class="page-header-inner">
+      <h1>📄 Detalle de Licitación</h1>
+      <p>Ingresa el código de una licitación para ver su información completa</p>
+    </div>
+  </header>
+
+  <main id="main-content" class="main-container" tabindex="-1">
+
+    <nav aria-label="Ruta de navegación" class="breadcrumb">
+      <a href="../index.html">Inicio</a>
+      <span aria-hidden="true">›</span>
+      <a href="licitaciones.html">Licitaciones</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Detalle</span>
+    </nav>
+
+    <!-- FORM BUSQUEDA POR CODIGO -->
+    <section aria-labelledby="buscar-codigo-title">
+      <div class="form-card">
+        <h2 id="buscar-codigo-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--color-primary);margin-bottom:1rem;">
+          🔎 Buscar por Código de Licitación
+        </h2>
+        <form id="detalleForm" novalidate aria-label="Formulario de búsqueda de detalle de licitación">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputCodigo">
+                Código de Licitación <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="inputCodigo"
+                name="codigo"
+                placeholder="Ej: 1057539-17-LR25"
+                required
+                aria-required="true"
+                aria-describedby="errorCodigo helpCodigo"
+                autocomplete="off"
+                spellcheck="false"
+                tabindex="0"
+              />
+              <span id="helpCodigo" class="help-text">
+                Ingresa el código exacto de la licitación (Ej: 1057539-17-LR25).
+                Puedes obtenerlo desde el <a href="licitaciones.html">listado de licitaciones</a>.
+              </span>
+              <span id="errorCodigo" class="error-msg" role="alert" aria-live="polite">
+                <span aria-hidden="true">⚠️</span> <span id="errorCodigoText"></span>
+              </span>
+            </div>
+            <div class="form-group" style="justify-content:flex-end;">
+              <button type="submit" class="btn btn-primary" tabindex="0"
+                aria-label="Buscar el detalle de la licitación">
+                🔎 Ver Detalle
+              </button>
+            </div>
+            <div class="form-group" style="justify-content:flex-end;">
+              <button type="button" id="btnLimpiarDetalle" class="btn btn-secondary" tabindex="0"
+                aria-label="Limpiar búsqueda de detalle">
+                ✕ Limpiar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <div id="alertArea" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- RESULTADO DETALLE -->
+    <section id="detalleSection" aria-labelledby="detalle-title" aria-live="polite" style="display:none;">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+        <h2 id="detalle-title" style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:var(--color-primary);"></h2>
+        <div id="estadoBadge"></div>
+      </div>
+
+      <div class="detail-grid" id="detailGrid"></div>
+
+      <!-- ITEMS TABLE -->
+      <div id="itemsSection" style="margin-top:1.5rem;"></div>
+
+      <!-- LINK MERCADO PUBLICO -->
+      <div style="margin-top:1.5rem;text-align:center;">
+        <a id="linkMercadoPublico" href="#" target="_blank" rel="noopener noreferrer"
+          class="btn btn-primary" tabindex="0"
+          aria-label="Ver esta licitación en el sitio oficial de Mercado Público">
+          🌐 Ver en Mercado Público
+        </a>
+      </div>
+    </section>
+
+    <!-- INITIAL STATE -->
+    <div id="initialState" class="empty-state">
+      <div class="empty-icon" aria-hidden="true">📄</div>
+      <p class="empty-title">Ingresa un código de licitación</p>
+      <p style="font-size:0.9rem;color:var(--color-text-secondary);">
+        También puedes acceder desde el
+        <a href="licitaciones.html" style="color:var(--color-primary);">listado de licitaciones</a>
+        haciendo clic en "Detalle".
+      </p>
+    </div>
+
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">Licita<span>Seguro</span></div>
+        <p class="footer-desc">Portal público de acceso a licitaciones del Estado de Chile.</p>
+      </div>
+      <div>
+        <p class="footer-section-title">Módulos</p>
+        <ul class="footer-links" role="list">
+          <li><a href="licitaciones.html">Listado de Licitaciones</a></li>
+          <li><a href="detalle.html">Detalle de Licitación</a></li>
+          <li><a href="proveedores.html">Buscar Proveedor</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-section-title">Fuentes</p>
+        <ul class="footer-links" role="list">
+          <li><a href="https://www.mercadopublico.cl" target="_blank" rel="noopener noreferrer">Mercado Público</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 LicitaSeguro. Datos provistos por Mercado Público – Chile.</p>
+    </div>
+  </footer>
+
+  <script src="../js/utils.js"></script>
+  <script>
+  'use strict';
+  const { LS } = window;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    LS.setActiveNav();
+    LS.initNavToggle();
+    initForm();
+    checkURLParam();
+  });
+
+  // ── Check if codigo came from URL ───────────────────
+  function checkURLParam() {
+    const params = new URLSearchParams(location.search);
+    const codigo = params.get('codigo');
+    if (codigo) {
+      document.getElementById('inputCodigo').value = decodeURIComponent(codigo);
+      buscarDetalle(decodeURIComponent(codigo));
+    }
+  }
+
+  // ── Form ────────────────────────────────────────────
+  function initForm() {
+    const form = document.getElementById('detalleForm');
+    const input = document.getElementById('inputCodigo');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!validateCodigo()) return;
+      buscarDetalle(input.value.trim());
+    });
+
+    document.getElementById('btnLimpiarDetalle').addEventListener('click', () => {
+      form.reset();
+      clearError();
+      document.getElementById('detalleSection').style.display = 'none';
+      document.getElementById('initialState').style.display = '';
+      LS.clearAlert(document.getElementById('alertArea'));
+      history.replaceState(null, '', location.pathname);
+    });
+
+    input.addEventListener('input', clearError);
+    input.addEventListener('blur', validateCodigo);
+  }
+
+  function validateCodigo() {
+    const input = document.getElementById('inputCodigo');
+    const errorText = document.getElementById('errorCodigoText');
+    const errorEl = document.getElementById('errorCodigo');
+    const val = input.value.trim();
+
+    if (!val) {
+      input.classList.add('is-invalid');
+      input.setAttribute('aria-invalid', 'true');
+      errorText.textContent = 'El código de licitación es obligatorio.';
+      errorEl.classList.add('show');
+      return false;
+    }
+
+    // Basic format check: alphanumeric + dashes
+    if (!/^[\w\-]+$/.test(val)) {
+      input.classList.add('is-invalid');
+      input.setAttribute('aria-invalid', 'true');
+      errorText.textContent = 'El código solo puede contener letras, números y guiones.';
+      errorEl.classList.add('show');
+      return false;
+    }
+
+    if (val.length < 5) {
+      input.classList.add('is-invalid');
+      input.setAttribute('aria-invalid', 'true');
+      errorText.textContent = 'El código de licitación parece demasiado corto.';
+      errorEl.classList.add('show');
+      return false;
+    }
+
+    clearError();
+    input.classList.add('is-valid');
+    return true;
+  }
+
+  function clearError() {
+    const input = document.getElementById('inputCodigo');
+    const errorEl = document.getElementById('errorCodigo');
+    input.classList.remove('is-invalid');
+    input.removeAttribute('aria-invalid');
+    errorEl.classList.remove('show');
+  }
+
+  // ── API ─────────────────────────────────────────────
+  async function buscarDetalle(codigo) {
+    const alertArea = document.getElementById('alertArea');
+    LS.clearAlert(alertArea);
+    document.getElementById('initialState').style.display = 'none';
+    document.getElementById('detalleSection').style.display = 'none';
+
+    try {
+      const url = LS.buildDetalleUrl(codigo);
+      const data = await LS.apiFetch(url, 'Cargando detalle de licitación...');
+
+      if (!data || !data.Listado || !Array.isArray(data.Listado) || data.Listado.length === 0) {
+        LS.showAlert(alertArea, 'warning', `🔍 No se encontró ninguna licitación con el código <strong>${escHtml(codigo)}</strong>. Verifica el código e intenta nuevamente.`);
+        document.getElementById('initialState').style.display = '';
+        return;
+      }
+
+      renderDetalle(data.Listado[0]);
+
+    } catch (err) {
+      LS.showAlert(alertArea, 'danger', LS.buildErrorMsg(err));
+      document.getElementById('initialState').style.display = '';
+    }
+  }
+
+  // ── Render ──────────────────────────────────────────
+  function renderDetalle(l) {
+    const section = document.getElementById('detalleSection');
+    const title = document.getElementById('detalle-title');
+    const estadoBadge = document.getElementById('estadoBadge');
+    const grid = document.getElementById('detailGrid');
+    const itemsSection = document.getElementById('itemsSection');
+
+    title.textContent = l.Nombre || 'Licitación sin nombre';
+    estadoBadge.innerHTML = LS.buildBadge(l.Estado || 'Desconocido');
+
+    const comprador = l.Comprador || {};
+    const items = l.Items || {};
+    const itemsList = items.Listado || [];
+
+    grid.innerHTML = `
+      <!-- Info General -->
+      <div class="detail-card">
+        <h3 class="detail-card-title">📋 Información General</h3>
+        <div class="detail-field">
+          <div class="detail-label">Código</div>
+          <div class="detail-value"><span class="table-code">${escHtml(l.CodigoExterno || '—')}</span></div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Tipo</div>
+          <div class="detail-value">${escHtml(l.Tipo || '—')}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Estado</div>
+          <div class="detail-value">${LS.buildBadge(l.Estado || 'Desconocido')}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Fecha Publicación</div>
+          <div class="detail-value">${escHtml(LS.formatFechaDisplay(l.Fechas?.FechaPublicacion || l.FechaPublicacion || '—'))}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Fecha Cierre</div>
+          <div class="detail-value">${escHtml(LS.formatFechaDisplay(l.Fechas?.FechaCierre || l.FechaCierre || '—'))}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Descripción</div>
+          <div class="detail-value" style="font-size:0.85rem;line-height:1.6;">${escHtml(l.Descripcion || '—')}</div>
+        </div>
+      </div>
+
+      <!-- Comprador -->
+      <div class="detail-card">
+        <h3 class="detail-card-title">🏛️ Organismo Comprador</h3>
+        <div class="detail-field">
+          <div class="detail-label">Nombre Organismo</div>
+          <div class="detail-value large">${escHtml(comprador.NombreOrganismo || '—')}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">RUT Unidad</div>
+          <div class="detail-value">${escHtml(comprador.RutUnidad || '—')}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Nombre Unidad</div>
+          <div class="detail-value">${escHtml(comprador.NombreUnidad || '—')}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Región</div>
+          <div class="detail-value">${escHtml(comprador.RegionUnidad || '—')}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Comuna</div>
+          <div class="detail-value">${escHtml(comprador.ComunaUnidad || '—')}</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-label">Dirección</div>
+          <div class="detail-value">${escHtml(comprador.DireccionUnidad || '—')}</div>
+        </div>
+      </div>
+
+      <!-- Montos -->
+      ${renderMontosCard(l)}
+    `;
+
+    // Items
+    if (itemsList.length > 0) {
+      itemsSection.innerHTML = renderItemsTable(itemsList);
+    } else {
+      itemsSection.innerHTML = '';
+    }
+
+    // Link Mercado Público
+    const linkEl = document.getElementById('linkMercadoPublico');
+    const cod = l.CodigoExterno || '';
+    linkEl.href = `https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=${encodeURIComponent(cod)}`;
+    linkEl.setAttribute('aria-label', `Ver licitación ${cod} en Mercado Público (abre en nueva pestaña)`);
+
+    section.style.display = '';
+    title.focus();
+  }
+
+  function renderMontosCard(l) {
+    const adjudicacion = l.Adjudicacion || {};
+    const monto = adjudicacion.MontoTotal || l.MontoEstimado || null;
+    if (!monto) return '';
+    return `
+      <div class="detail-card">
+        <h3 class="detail-card-title">💰 Montos</h3>
+        <div class="detail-field">
+          <div class="detail-label">Monto Adjudicado</div>
+          <div class="detail-value large">${formatMonto(monto)}</div>
+        </div>
+        ${adjudicacion.Proveedor ? `
+        <div class="detail-field">
+          <div class="detail-label">Proveedor Adjudicado</div>
+          <div class="detail-value">${escHtml(adjudicacion.Proveedor)}</div>
+        </div>` : ''}
+      </div>`;
+  }
+
+  function renderItemsTable(items) {
+    const rows = items.map((item, i) => `
+      <tr>
+        <td data-label="#">${i + 1}</td>
+        <td data-label="Descripción">${escHtml(item.NombreProducto || item.Descripcion || '—')}</td>
+        <td data-label="Cantidad">${escHtml(String(item.Cantidad || '—'))}</td>
+        <td data-label="Unidad">${escHtml(item.UnidadMedida || '—')}</td>
+        <td data-label="Categoría">${escHtml(item.Categoria || '—')}</td>
+      </tr>`).join('');
+
+    return `
+      <div class="form-card">
+        <h3 style="font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--color-primary);margin-bottom:1rem;">
+          📦 Ítems de la Licitación (${items.length})
+        </h3>
+        <div style="overflow-x:auto;">
+          <table class="licitacion-table" role="table" aria-label="Ítems de la licitación">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Unidad</th>
+                <th scope="col">Categoría</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  function formatMonto(val) {
+    if (!val) return '—';
+    const n = parseFloat(val);
+    if (isNaN(n)) return String(val);
+    return '$ ' + n.toLocaleString('es-CL');
+  }
+
+  function escHtml(str) {
+    if (str === null || str === undefined) return '—';
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  </script>
+</body>
+</html>
