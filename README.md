@@ -236,7 +236,9 @@ GET https://api.mercadopublico.cl/servicios/v1/Publico/Empresas/BuscarProveedor
 | Integrante 3 | Documentación / QA |
 
 ---
+link del video:
+https://ipciisa-my.sharepoint.com/:v:/g/personal/ignacio_leiva_cordero_estudiante_ipss_cl/IQByUJ9LN_5zRpP1Uk71LmAeAQR6TyNl2XB0Jxf8Jkz7OMA?e=Oimkbz&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
 
 ## 📄 Licencia
 
-Proyecto académico – Instituto Profesional San Sebastián · 2025
+Proyecto académico – Instituto Profesional San Sebastián · 2026
