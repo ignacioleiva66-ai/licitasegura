@@ -1,4 +1,5 @@
 ![portada](https://github.com/ignacioleiva66-ai/licitasegura/blob/bcd63484629fa7a0e92ca08bde40114897c047a2/Captura%20de%20pantalla%202026-06-12%20194350.png)
+link:https://github.com/ignacioleiva66-ai/licitasegura
 
 # LicitaSeguro 🏛️
 
